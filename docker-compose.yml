@@ -1,0 +1,25 @@
+services:
+  mongo-centros:
+    image: mongo:6
+    container_name: mongo-centros
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: centros-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo-centros
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo-centros:27017/centrosdb
+
+volumes:
+  mongo_data:
